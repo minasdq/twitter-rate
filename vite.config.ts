@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       Atoms: path.resolve(__dirname, './src/atoms'),
+      Components: path.resolve(__dirname, './src/components'),
       Types: path.resolve(__dirname, './src/types'),
     },
   },

@@ -1,3 +1,4 @@
+import { BrowserRouter } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
 import ThemeProvider from './theme/ThemeProvider';
@@ -7,11 +8,13 @@ interface AppProviderProps {
 }
 
 const AppProvider = ({ children }: AppProviderProps) => (
-  <RecoilRoot>
-    <ThemeProvider>
-      {children}
-    </ThemeProvider>
-  </RecoilRoot>
+  <BrowserRouter>
+    <RecoilRoot>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </RecoilRoot>
+  </BrowserRouter>
 );
 
 export default AppProvider;

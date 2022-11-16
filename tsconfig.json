@@ -23,6 +23,9 @@
       "Atoms/*": [
         "./src/atoms/*"
       ],
+      "Components/*": [
+        "./src/components/*"
+      ],
       "Types/*": [
         "./src/types/*"
       ]
