@@ -1,8 +1,16 @@
 import { createTheme } from '@mui/material/styles';
 
 const lightTheme = createTheme({
+  typography: {
+    h1: {
+      fontSize: '3rem',
+    },
+    body1: {
+      fontSize: '1.2rem',
+    },
+  },
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
       main: '#E96B00',
     },

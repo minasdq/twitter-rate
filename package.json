@@ -14,8 +14,10 @@
     "@mui/material": "^5.10.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-feather": "^2.0.10",
     "react-router-dom": "^6.4.3",
-    "recoil": "^0.7.6"
+    "recoil": "^0.7.6",
+    "tss-react": "^4.4.4"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
