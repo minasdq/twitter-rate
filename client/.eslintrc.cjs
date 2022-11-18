@@ -1,15 +1,20 @@
 module.exports = {
   env: {
-    browser: true,
-    es2021: true
+    "browser": true,
+    "es2021": true
   },
-  extends: ['airbnb', 'airbnb-typescript'],
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  extends: [
+    "airbnb",
+    "airbnb-typescript"
+  ],
+  parser: "@typescript-eslint/parser",
+  plugins: [
+    "@typescript-eslint"
+  ],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module',
     project: "./tsconfig.eslint.json",
+    tsconfigRootDir: __dirname
   },
   rules: {
     "react/react-in-jsx-scope": "off",
