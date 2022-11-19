@@ -55,6 +55,7 @@ const Report = () => {
     queryFn: () => axios.get(`getUser/${initialUsername}`),
   });
 
+  console.log(usernameInfo);
   const getResult = () => {
     if (isLoading) {
       return <CircularProgress />;
