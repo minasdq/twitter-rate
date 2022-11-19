@@ -12,7 +12,7 @@ import {
 import { HeartIcon } from '@heroicons/react/solid';
 
 import Card from 'Components/Card';
-import Searchbar from 'Components/Searchbar';
+import SearchBar from 'Components/SearchBar';
 
 import axios from 'Configs/axios';
 
@@ -85,7 +85,7 @@ const Report = () => {
   return (
     <Grid className={classes.container}>
       <Grid className={classes.searchContainer}>
-        <Searchbar username={username} setUsername={setUsername} />
+        <SearchBar username={username} setUsername={setUsername} />
       </Grid>
       <Grid className={classes.cardsContainer}>
         {getResult()}

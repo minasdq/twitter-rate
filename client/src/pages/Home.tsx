@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Grid, Theme, Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
-import Searchbar from 'Components/Searchbar';
+import SearchBar from 'Components/SearchBar';
 
 import Formaloo from 'Assets/images/Formaloo.jpg';
 
@@ -43,7 +43,7 @@ const Home = () => {
       >
         A tool to detect who is fake on Twitter
       </Typography>
-      <Searchbar username={username} setUsername={setUsername} />
+      <SearchBar username={username} setUsername={setUsername} />
     </Grid>
   );
 };

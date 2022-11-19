@@ -23,12 +23,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
 }));
 
-interface SearchbarProps {
+interface SearchBarProps {
   username: string,
   setUsername: (value: string) => void
 }
 
-const Searchbar = ({ username, setUsername }: SearchbarProps) => {
+const SearchBar = ({ username, setUsername }: SearchBarProps) => {
   const navigate = useNavigate();
   const { classes } = useStyles();
 
@@ -41,4 +41,4 @@ const Searchbar = ({ username, setUsername }: SearchbarProps) => {
     </Grid>
   );
 };
-export default Searchbar;
+export default SearchBar;
