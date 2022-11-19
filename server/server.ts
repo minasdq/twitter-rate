@@ -29,11 +29,17 @@ app.options(
     credentials: true
   })
 )
+
 const server = http.createServer(app)
+
 const BEARER_TOKEN = enviromentVariable?.BEARER_TOKEN
-const getUsersUrl = new URL(
-  'https://api.twitter.com/2/users/by/username/narvashTech'
+const searchUserUrl = new URL(
+  'https://api.twitter.com/2/users/by/username/'
 )
+const searchUsersUrl = new URL(
+  'https://api.twitter.com/2/users/by?usernames='
+)
+
 const authMessage = {
   title: 'Could not authenticate',
   details: [
@@ -42,17 +48,18 @@ const authMessage = {
   ],
   type: 'https://developer.twitter.com/en/docs/authentication'
 }
-const requestConfig = {
-  url: getUsersUrl as unknown as string,
-  auth: {
-    bearer: BEARER_TOKEN
-  },
-  json: true
-}
+
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-app.get('/api/getUsers', async (req: express.Request, res: express.Response) => {
+app.get('/api/getUser/:username', async (req: express.Request, res: express.Response) => {
   if (!BEARER_TOKEN) {
     res.status(400).send(authMessage)
+  }
+  const requestConfig = {
+    url: `${searchUserUrl as unknown as string}${req.params.username}?user.fields=description,name,profile_image_url,protected,public_metrics,verified`,
+    auth: {
+      bearer: BEARER_TOKEN
+    },
+    json: true
   }
   try {
     const response = await get(requestConfig)
@@ -68,4 +75,32 @@ app.get('/api/getUsers', async (req: express.Request, res: express.Response) => 
     res.send(e)
   }
 })
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.get('/api/getUsers/:username', async (req: express.Request, res: express.Response) => {
+  if (!BEARER_TOKEN) {
+    res.status(400).send(authMessage)
+  }
+  const requestConfig = {
+    url: `${searchUsersUrl as unknown as string}${req.params.username}`,
+    auth: {
+      bearer: BEARER_TOKEN
+    },
+    json: true
+  }
+  try {
+    const response = await get(requestConfig)
+    if (response.statusCode !== 200) {
+      if (response.statusCode === 403) {
+        res.status(403).send(response.body)
+      } else {
+        throw new Error(response.body.error.message)
+      }
+    }
+    res.send(response)
+  } catch (e) {
+    res.send(e)
+  }
+})
+
 server.listen(port, () => console.log(`Listening on port ${port}`))

@@ -27,6 +27,12 @@
       "Components/*": [
         "./src/components/*"
       ],
+      "Configs/*": [
+        "./src/configs/*"
+      ],
+      "Hooks/*": [
+        "./src/hooks/*"
+      ],
       "Types/*": [
         "./src/types/*"
       ]

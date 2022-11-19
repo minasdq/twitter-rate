@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Grid, Theme, Typography } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
@@ -28,6 +30,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }));
 
 const Home = () => {
+  const [username, setUsername] = useState('');
   const { classes } = useStyles();
 
   return (
@@ -40,7 +43,7 @@ const Home = () => {
       >
         A tool to detect who is fake on Twitter
       </Typography>
-      <Searchbar />
+      <Searchbar username={username} setUsername={setUsername} />
     </Grid>
   );
 };

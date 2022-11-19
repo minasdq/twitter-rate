@@ -1,10 +1,8 @@
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-import TwitterApi from 'twitter-v2';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, Grid, Theme } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import { Search } from 'react-feather';
+import { SearchIcon } from '@heroicons/react/outline';
 
 import Autocomplete from './Autocomplete';
 
@@ -13,26 +11,32 @@ const useStyles = makeStyles()((theme: Theme) => ({
     width: '100%',
     display: 'flex',
     alignItems: 'center',
+    height: 60,
   },
   button: {
     marginLeft: theme.spacing(1),
-    height: 56,
+    height: '100%',
+  },
+  icon: {
+    width: 25,
+    height: 25,
   },
 }));
 
-const Searchbar = () => {
-  const { classes } = useStyles();
+interface SearchbarProps {
+  username: string,
+  setUsername: (value: string) => void
+}
 
-  const data = useQuery({
-    queryKey: ['todos'],
-    queryFn: () => axios.get('http://localhost:5000/api/getUsers'),
-  });
+const Searchbar = ({ username, setUsername }: SearchbarProps) => {
+  const navigate = useNavigate();
+  const { classes } = useStyles();
 
   return (
     <Grid className={classes.container}>
-      <Autocomplete />
-      <Button variant="contained" className={classes.button}>
-        <Search />
+      <Autocomplete username={username} setUsername={setUsername} />
+      <Button variant="contained" className={classes.button} onClick={() => navigate(`profile/${username}`)}>
+        <SearchIcon className={classes.icon} />
       </Button>
     </Grid>
   );

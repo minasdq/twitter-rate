@@ -6,7 +6,7 @@ import Report from './pages/Report';
 const App = () => (
   <Routes>
     <Route path="*" element={<Home />} />
-    <Route path="report/:profileId" element={<Report />} />
+    <Route path="report/:username" element={<Report />} />
   </Routes>
 );
 
