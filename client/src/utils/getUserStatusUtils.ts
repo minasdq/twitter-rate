@@ -1,11 +1,13 @@
-interface GetActionScoreParams {
+import countBy from 'lodash/countBy';
+
+interface ActionScoreParams {
   tweetCount: number,
   followerCount: number,
   followingCount: number,
   creationYear: number,
 }
 
-interface GetTotalActionScoreParams extends GetActionScoreParams {
+interface TotalActionScoreParams extends ActionScoreParams {
   retweetCount: number,
   likeCount: number,
   isVerified: boolean,
@@ -17,7 +19,7 @@ export const getActionScore = ({
   followerCount,
   followingCount,
   creationYear,
-}: GetActionScoreParams) => {
+}: ActionScoreParams) => {
   const year = new Date().getFullYear();
   const differenceYear = year - creationYear;
   const followerToFollowerRatio = followerCount / followingCount;
@@ -47,7 +49,7 @@ export const getTotalActionScore = ({
   likeCount,
   isVerified,
   creationYear,
-}: GetTotalActionScoreParams) => {
+}: TotalActionScoreParams) => {
   const actionScore = getActionScore({
     tweetCount, followerCount, followingCount, creationYear,
   });
@@ -71,4 +73,39 @@ export const getTotalActionScore = ({
   }
 
   return totalActionScore;
+};
+
+export const getInteractionScore = (users: TotalActionScoreParams[]) => {
+  let interactionScore = 0;
+
+  users.forEach((user) => {
+    const totalActionScore = getTotalActionScore(user);
+    interactionScore += totalActionScore;
+  });
+
+  return interactionScore;
+};
+
+export const getVerifiedUserCount = (users: TotalActionScoreParams[]) => {
+  const verifiedStatus = countBy(users, (user) => (user.isVerified ? 'isVerified' : 'isNotVerified'));
+
+  return verifiedStatus.isVerified;
+};
+
+export const getTotalInteractionScore = (users: TotalActionScoreParams[]) => {
+  const interactionScore = getInteractionScore(users);
+  const verifiedUserCount = getVerifiedUserCount(users);
+
+  let totalInteractionScore = interactionScore;
+  if (verifiedUserCount > 10) {
+    totalInteractionScore += 3;
+  } else if (verifiedUserCount > 1) {
+    totalInteractionScore += 1;
+  }
+
+  if (users.length === 2) {
+    totalInteractionScore = 2;
+  }
+
+  return totalInteractionScore;
 };
