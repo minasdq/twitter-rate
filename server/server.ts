@@ -37,7 +37,7 @@ const searchUserUrl = new URL(
   'https://api.twitter.com/2/users/by/username/'
 )
 const searchUsersUrl = new URL(
-  'https://api.twitter.com/2/users/by?usernames='
+  'https://api.twitter.com/1.1/users/search.json'
 )
 
 const authMessage = {
@@ -82,7 +82,7 @@ app.get('/api/getUsers/:username', async (req: express.Request, res: express.Res
     res.status(400).send(authMessage)
   }
   const requestConfig = {
-    url: `${searchUsersUrl as unknown as string}${req.params.username}`,
+    url: `${searchUsersUrl as unknown as string}?q=${req.params.username}`,
     auth: {
       bearer: BEARER_TOKEN
     },
@@ -90,6 +90,7 @@ app.get('/api/getUsers/:username', async (req: express.Request, res: express.Res
   }
   try {
     const response = await get(requestConfig)
+
     if (response.statusCode !== 200) {
       if (response.statusCode === 403) {
         res.status(403).send(response.body)

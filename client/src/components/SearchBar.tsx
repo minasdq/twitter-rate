@@ -34,8 +34,8 @@ const SearchBar = ({ username, setUsername }: SearchBarProps) => {
 
   return (
     <Grid className={classes.container}>
-      <Autocomplete username={username} setUsername={setUsername} />
-      <Button variant="contained" className={classes.button} onClick={() => navigate(`profile/${username}`)}>
+      <Autocomplete query={username} setQuery={setUsername} />
+      <Button variant="contained" className={classes.button} onClick={() => navigate(`report/${username}`)}>
         <SearchIcon className={classes.icon} />
       </Button>
     </Grid>

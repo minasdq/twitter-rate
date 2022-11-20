@@ -1,82 +1,106 @@
 import { ChangeEvent } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import classnames from 'classnames';
 
 import {
-  Autocomplete as MuiAutocomplete, CircularProgress, InputAdornment, TextField, Theme,
+  Autocomplete as MuiAutocomplete,
+  CircularProgress,
+  InputAdornment,
+  TextField,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import { AtSymbolIcon } from '@heroicons/react/outline';
+import { AtSymbolIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 
-import useDebounce from 'Hooks/useDebounce';
+import AutoCompleteListItem from './AutoCompleteListItem';
 
-import axios from 'Configs/axios';
+import useAutoCompleteState from 'Hooks/useAutoCompleteState';
 
-interface AutocompleteProps {
-  username: string,
-  setUsername: (value: string) => void
-}
-
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()((theme) => ({
   autocomplete: {
     margin: 'auto',
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 0,
   },
   icon: {
+    margin: theme.spacing(1),
     width: 25,
     height: 25,
+  },
+  loadingIcon: {
     color: theme.palette.grey[600],
+  },
+  errorIcon: {
+    color: theme.palette.error.main,
   },
 }));
 
+interface AutoCompleteProps {
+  query: string,
+  setQuery: (value: string) => void
+}
+
 const Autocomplete = ({
-  username, setUsername,
-}: AutocompleteProps) => {
+  query, setQuery,
+}: AutoCompleteProps) => {
   const { classes } = useStyles();
-  const debouncedValue = useDebounce(username, 300);
 
   const {
-    data: usernameList, isStale: isUsernameListStale,
-    isLoading: isUsernameListLoading,
-  } = useQuery({
-    queryKey: ['getUsers', debouncedValue],
-    queryFn: () => axios.get(`getUsers/${debouncedValue}`),
-    enabled: false,
-  });
+    usernameList,
+    isLoading,
+    isError,
+  } = useAutoCompleteState(query, setQuery);
 
-  const handleAutoCompleteChanges = (event: ChangeEvent<HTMLInputElement
-  | HTMLTextAreaElement>) => {
-    setUsername(event.target.value);
+  const handleAutoCompleteChanges = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
   };
 
   return (
     <MuiAutocomplete
       fullWidth
       className={classes.autocomplete}
-      freeSolo={isUsernameListStale}
-      filterOptions={(filterOptions) => filterOptions}
-      options={usernameList?.data.body?.data || []}
+      freeSolo
+      options={usernameList?.data?.body || []}
+      getOptionLabel={(option: any) => option.screen_name}
+      filterOptions={(x) => x}
+      renderOption={(props, option, { inputValue }) => (
+        <AutoCompleteListItem
+          {...props}
+          name={option.name}
+          username={option.screen_name}
+          avatarSrc={option.profile_image_url}
+          inputValue={inputValue}
+        />
+      )}
       renderInput={
         (params) => (
           <TextField
             {...params}
             autoFocus
-            margin="dense"
             onChange={handleAutoCompleteChanges}
-            value={username}
+            value={query}
             placeholder="Search username ..."
             InputProps={{
+              ...params.InputProps,
               startAdornment: (
                 <InputAdornment position="end">
-                  <AtSymbolIcon className={classes.icon} />
+                  <AtSymbolIcon className={classnames(classes.icon, classes.loadingIcon)} />
                 </InputAdornment>
               ),
-              ...(isUsernameListLoading && {
+              ...(isLoading && {
                 endAdornment: (
                   <InputAdornment position="end">
                     <CircularProgress size={20} />
+                  </InputAdornment>
+                ),
+              }),
+              ...(isError && {
+                endAdornment: (
+                  <InputAdornment position="end" className={classes.icon}>
+                    <ExclamationCircleIcon
+                      className={classnames(classes.icon, classes.errorIcon)}
+                    />
                   </InputAdornment>
                 ),
               }),

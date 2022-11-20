@@ -9,14 +9,10 @@ import Formaloo from 'Assets/images/Formaloo.jpg';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
-    minHeight: '100vh',
+    minHeight: '70vh',
     width: 600,
     maxWidth: '80%',
-    margin: 'auto',
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
+    margin: '0 auto',
   },
   image: {
     width: 150,
@@ -34,7 +30,13 @@ const Home = () => {
   const { classes } = useStyles();
 
   return (
-    <Grid className={classes.container}>
+    <Grid
+      container
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      className={classes.container}
+    >
       <img src={Formaloo} alt="formaloo" className={classes.image} />
       <Typography variant="h1">Formaloo</Typography>
       <Typography
