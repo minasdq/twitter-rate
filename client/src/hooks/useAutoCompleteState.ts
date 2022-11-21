@@ -13,7 +13,7 @@ const useAutoCompleteState = (query: string, setQuery: (value: string) => void) 
     data: usernameList,
   } = useQuery({
     queryKey: ['getUsers', debouncedQuery],
-    queryFn: () => axios.get(`getUsers/${debouncedQuery}`),
+    queryFn: () => axios.get(`get/users/${debouncedQuery}`),
     enabled: !!debouncedQuery,
   });
 

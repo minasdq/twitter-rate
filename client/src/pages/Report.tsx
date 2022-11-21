@@ -50,15 +50,26 @@ const Report = () => {
   const [username, setUsername] = useState(initialUsername || '');
   const { classes } = useStyles();
 
-  const { data: usernameInfo, isLoading, isError } = useQuery({
+  const {
+    data: usernameInfo, isLoading: isUsernameInfoLoading, isError: isUsernameInfoError,
+  } = useQuery({
     queryKey: ['getUser', initialUsername],
-    queryFn: () => axios.get(`getUser/${initialUsername}`),
+    queryFn: () => axios.get(`get/user/${initialUsername}`),
   });
 
-  const getResult = () => {
-    if (isLoading) {
+  const {
+    data: mutualFollowers, isLoading: isMutualFollowersLoading,
+    isError: isMutualFollowersError,
+  } = useQuery({
+    queryKey: ['mutualFollowers', initialUsername],
+    queryFn: () => axios.get(`get/mutual-followers/?username=${initialUsername}&id=${usernameInfo?.data?.body?.id_str}`),
+    enabled: !!usernameInfo?.data?.body?.id_str,
+  });
+
+  const showResult = () => {
+    if (isMutualFollowersLoading) {
       return <CircularProgress />;
-    } if (isError) {
+    } if (isMutualFollowersError) {
       return (
         <Typography>
           An unknown error occurred
@@ -66,16 +77,47 @@ const Report = () => {
       );
     }
     return (
+      <Card content="6" media={<Avatar />} />
+    );
+  };
+
+  const showUserInfo = () => {
+    if (isUsernameInfoLoading) {
+      return <CircularProgress />;
+    } if (isUsernameInfoError) {
+      return (
+        <Typography>
+          An unknown error occurred
+        </Typography>
+      );
+    }
+    if (!usernameInfo?.data.body) {
+      return (
+        <Typography>
+          User with this profile was not found
+        </Typography>
+      );
+    }
+    return (
       <>
-        <Grid className={classes.resultCard}>
-          <Card content="6" media={<Avatar />} />
-        </Grid>
         <Grid container justifyContent="center">
-          <Card content="6" media={<HeartIcon className={classes.icon} />} />
-          <Card content="6" media={<UserAddIcon className={classes.icon} />} />
-          <Card content="6" media={<UsersIcon className={classes.icon} />} />
+          <Card
+            content={usernameInfo?.data.body.favourites_count}
+            media={<HeartIcon className={classes.icon} />}
+          />
+          <Card
+            content={usernameInfo?.data.body.followers_count}
+            media={<UserAddIcon className={classes.icon} />}
+          />
+          <Card
+            content={usernameInfo?.data.body.friends_count}
+            media={<UsersIcon className={classes.icon} />}
+          />
           <Card content="6" media={<ChatAlt2Icon className={classes.icon} />} />
           <Card content="6" media={<SwitchVerticalIcon className={classes.icon} />} />
+        </Grid>
+        <Grid className={classes.resultCard}>
+          {showResult()}
         </Grid>
       </>
     );
@@ -87,7 +129,7 @@ const Report = () => {
         <SearchBar username={username} setUsername={setUsername} />
       </Grid>
       <Grid className={classes.cardsContainer}>
-        {getResult()}
+        {showUserInfo()}
       </Grid>
     </Grid>
   );

@@ -5,6 +5,12 @@ import http from 'http'
 import cors from 'cors'
 import request from 'request'
 import dotenv from 'dotenv'
+import lodash from 'lodash'
+
+interface User {
+  username: string
+  id_str: string
+}
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -34,10 +40,17 @@ const server = http.createServer(app)
 
 const BEARER_TOKEN = enviromentVariable?.BEARER_TOKEN
 const searchUserUrl = new URL(
-  'https://api.twitter.com/2/users/by/username/'
+  'https://api.twitter.com/1.1/users/show.json'
 )
 const searchUsersUrl = new URL(
   'https://api.twitter.com/1.1/users/search.json'
+)
+const getFollowersUrl = new URL(
+  'https://api.twitter.com/1.1/followers/list.json'
+)
+
+const getFollowingUrl = new URL(
+  'https://api.twitter.com/2/users'
 )
 
 const authMessage = {
@@ -50,12 +63,12 @@ const authMessage = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-app.get('/api/getUser/:username', async (req: express.Request, res: express.Response) => {
+app.get('/api/get/user/:username', async (req: express.Request, res: express.Response) => {
   if (!BEARER_TOKEN) {
     res.status(400).send(authMessage)
   }
   const requestConfig = {
-    url: `${searchUserUrl as unknown as string}${req.params.username}?user.fields=description,name,profile_image_url,protected,public_metrics,verified`,
+    url: `${searchUserUrl as unknown as string}?screen_name=${req.params.username}`,
     auth: {
       bearer: BEARER_TOKEN
     },
@@ -77,12 +90,12 @@ app.get('/api/getUser/:username', async (req: express.Request, res: express.Resp
 })
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
-app.get('/api/getUsers/:username', async (req: express.Request, res: express.Response) => {
+app.get('/api/get/users/:query', async (req: express.Request, res: express.Response) => {
   if (!BEARER_TOKEN) {
     res.status(400).send(authMessage)
   }
   const requestConfig = {
-    url: `${searchUsersUrl as unknown as string}?q=${req.params.username}`,
+    url: `${searchUsersUrl as unknown as string}?q=${req.params.query}`,
     auth: {
       bearer: BEARER_TOKEN
     },
@@ -99,6 +112,47 @@ app.get('/api/getUsers/:username', async (req: express.Request, res: express.Res
       }
     }
     res.send(response)
+  } catch (e) {
+    res.send(e)
+  }
+})
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+app.get('/api/get/mutual-followers', async (req: express.Request, res: express.Response) => {
+  if (!BEARER_TOKEN) {
+    res.status(400).send(authMessage)
+  }
+
+  const followersRequestConfig = {
+    url: `${getFollowersUrl as unknown as string}?cursor=-1&screen_name=${req.query.username as string}&skip_status=true&include_user_entities=false`,
+    auth: {
+      bearer: BEARER_TOKEN
+    },
+    json: true
+  }
+  const followingRequestConfig = {
+    url: `${getFollowingUrl as unknown as string}/${req.query.id as string}/following`,
+    auth: {
+      bearer: BEARER_TOKEN
+    },
+    json: true
+  }
+  try {
+    const followersResponse = await get(followersRequestConfig)
+    const followingResponse = await get(followingRequestConfig)
+
+    if (followersResponse.statusCode !== 200 || followingResponse.statusCode !== 200) {
+      if (followersResponse.statusCode === 403 || followingResponse.statusCode === 400) {
+        res.status(403).send(followersResponse.body)
+      } else {
+        throw new Error(followersResponse.body.error.message)
+      }
+    }
+    const mutualFollowers = followersResponse.body.users.filter((user: User) => {
+      return lodash.find(followersResponse.body.data || [], { id: user.id_str })
+    })
+
+    res.send({ mutualFollowers })
   } catch (e) {
     res.send(e)
   }

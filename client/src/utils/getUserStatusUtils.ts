@@ -14,6 +14,10 @@ interface TotalActionScoreParams extends ActionScoreParams {
   bio: string,
 }
 
+interface RateTwitterParams extends TotalActionScoreParams {
+  mutualFollowers: TotalActionScoreParams[]
+}
+
 export const getActionScore = ({
   tweetCount,
   followerCount,
@@ -107,5 +111,26 @@ export const getTotalInteractionScore = (users: TotalActionScoreParams[]) => {
     totalInteractionScore = 2;
   }
 
-  return totalInteractionScore;
+  return totalInteractionScore / users.length;
 };
+
+export const getRateTwitter = ({
+  tweetCount,
+  retweetCount,
+  followerCount,
+  followingCount,
+  likeCount,
+  isVerified,
+  creationYear,
+  bio,
+  mutualFollowers,
+}: RateTwitterParams) => getTotalInteractionScore(mutualFollowers) + getTotalActionScore({
+  tweetCount,
+  retweetCount,
+  followerCount,
+  followingCount,
+  likeCount,
+  isVerified,
+  creationYear,
+  bio,
+});
