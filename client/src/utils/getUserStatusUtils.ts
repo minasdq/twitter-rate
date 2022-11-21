@@ -97,6 +97,9 @@ export const getVerifiedUserCount = (users: TotalActionScoreParams[]) => {
 };
 
 export const getTotalInteractionScore = (users: TotalActionScoreParams[]) => {
+  if (!users.length) {
+    return 0;
+  }
   const interactionScore = getInteractionScore(users);
   const verifiedUserCount = getVerifiedUserCount(users);
 

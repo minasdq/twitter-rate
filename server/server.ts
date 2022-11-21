@@ -152,7 +152,7 @@ app.get('/api/get/mutual-followers', async (req: express.Request, res: express.R
       return lodash.find(followersResponse.body.data || [], { id: user.id_str })
     })
 
-    res.send({ mutualFollowers })
+    res.send({ body: mutualFollowers })
   } catch (e) {
     res.send(e)
   }

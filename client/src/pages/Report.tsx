@@ -15,9 +15,13 @@ import { HeartIcon } from '@heroicons/react/solid';
 import Card from 'Components/Card';
 import SearchBar from 'Components/SearchBar';
 
+import { getRateTwitter } from 'Utils/getUserStatusUtils';
+import { mapUserTypeUtil } from 'Utils/mapTypeUtils';
 import { socialMediaNumberFormatter } from 'Utils/numberUtils';
 
 import axios from 'Configs/axios';
+
+import { UserResponse, UsersResponse } from 'Types/user';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
@@ -76,21 +80,21 @@ const Report = () => {
 
   const {
     data: usernameInfo, isLoading: isUsernameInfoLoading, isError: isUsernameInfoError,
-  } = useQuery({
+  } = useQuery<UserResponse>({
     queryKey: ['getUser', initialUsername],
     queryFn: () => axios.get(`get/user/${initialUsername}`),
   });
 
-  console.log(usernameInfo);
-
   const {
     data: mutualFollowers, isLoading: isMutualFollowersLoading,
     isError: isMutualFollowersError,
-  } = useQuery({
+  } = useQuery < UsersResponse>({
     queryKey: ['mutualFollowers', initialUsername],
     queryFn: () => axios.get(`get/mutual-followers/?username=${initialUsername}&id=${usernameInfo?.data?.body?.id_str}`),
     enabled: !!usernameInfo?.data?.body?.id_str,
   });
+
+  console.log(mutualFollowers?.data);
 
   const showResult = () => {
     if (isMutualFollowersLoading) {
@@ -104,7 +108,17 @@ const Report = () => {
     }
     return (
       <Card
-        content={usernameInfo!.data.body.statuses_count}
+        content={(
+          <Typography variant="body2" className={classes.text}>
+            Score:
+            &nbsp;
+            {getRateTwitter({
+              ...mapUserTypeUtil(usernameInfo!.data.body),
+              mutualFollowers: [],
+            })}
+            /10
+          </Typography>
+          )}
         media={(
           <>
             <Avatar
@@ -133,7 +147,7 @@ const Report = () => {
     if (!usernameInfo?.data.body) {
       return (
         <Typography>
-          User with this profile was not found
+          UserResponse with this profile was not found
         </Typography>
       );
     }

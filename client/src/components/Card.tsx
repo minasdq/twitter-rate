@@ -1,10 +1,12 @@
+import { ReactNode } from 'react';
+
 import {
   Card as MuiCard, CardContent, CardMedia, Theme,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 
 interface CardProps {
-  content: string,
+  content: ReactNode,
   media: JSX.Element
 }
 
