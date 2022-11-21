@@ -8,11 +8,19 @@ const darkTheme = createTheme({
     body1: {
       fontSize: '1.2rem',
     },
+    body2: {
+      fontSize: '1rem',
+    },
   },
   palette: {
     mode: 'dark',
     primary: {
       main: '#E96B00',
+    },
+    secondary: {
+      dark: '#053F5C',
+      main: '#429EBD',
+      light: '#9FE7F5',
     },
     background: {
       default: '#212121',

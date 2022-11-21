@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import classnames from 'classnames';
 
 import {
   Avatar, CircularProgress, Grid, Theme, Typography,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import {
-  ChatAlt2Icon, SwitchVerticalIcon, UserAddIcon, UsersIcon,
+  ChatAlt2Icon, UserAddIcon, UsersIcon,
 } from '@heroicons/react/outline';
 import { HeartIcon } from '@heroicons/react/solid';
 
 import Card from 'Components/Card';
 import SearchBar from 'Components/SearchBar';
+
+import { socialMediaNumberFormatter } from 'Utils/numberUtils';
 
 import axios from 'Configs/axios';
 
@@ -39,9 +42,30 @@ const useStyles = makeStyles()((theme: Theme) => ({
   icon: {
     width: 50,
     height: 50,
+    marginBottom: theme.spacing(1.5),
   },
-  resultCard: {
-    marginBottom: theme.spacing(3),
+  infoCards: {
+    marginBottom: theme.spacing(4),
+  },
+  heart: {
+    color: theme.palette.error.main,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    marginBottom: theme.spacing(1.5),
+  },
+  followers: {
+    color: theme.palette.primary.main,
+  },
+  following: {
+    color: theme.palette.secondary.dark,
+  },
+  tweets: {
+    color: theme.palette.secondary.main,
+  },
+  text: {
+    fontWeight: 600,
   },
 }));
 
@@ -56,6 +80,8 @@ const Report = () => {
     queryKey: ['getUser', initialUsername],
     queryFn: () => axios.get(`get/user/${initialUsername}`),
   });
+
+  console.log(usernameInfo);
 
   const {
     data: mutualFollowers, isLoading: isMutualFollowersLoading,
@@ -77,7 +103,20 @@ const Report = () => {
       );
     }
     return (
-      <Card content="6" media={<Avatar />} />
+      <Card
+        content={usernameInfo!.data.body.statuses_count}
+        media={(
+          <>
+            <Avatar
+              className={classes.avatar}
+              src={usernameInfo!.data.body.profile_image_url_https}
+            />
+            <Typography variant="body2" className={classes.text}>
+              {`@${initialUsername}`}
+            </Typography>
+          </>
+        )}
+      />
     );
   };
 
@@ -100,23 +139,45 @@ const Report = () => {
     }
     return (
       <>
-        <Grid container justifyContent="center">
+        <Grid container justifyContent="center" className={classes.infoCards}>
           <Card
-            content={usernameInfo?.data.body.favourites_count}
-            media={<HeartIcon className={classes.icon} />}
+            content={socialMediaNumberFormatter.format(usernameInfo!.data.body.favourites_count)}
+            media={(
+              <>
+                <HeartIcon className={classnames(classes.icon, classes.heart)} />
+                <Typography variant="body2" className={classes.text}>Likes</Typography>
+              </>
+            )}
           />
           <Card
-            content={usernameInfo?.data.body.followers_count}
-            media={<UserAddIcon className={classes.icon} />}
+            content={socialMediaNumberFormatter.format(usernameInfo!.data.body.followers_count)}
+            media={(
+              <>
+                <UserAddIcon className={classnames(classes.icon, classes.followers)} />
+                <Typography variant="body2" className={classes.text}>Followers</Typography>
+              </>
+            )}
           />
           <Card
-            content={usernameInfo?.data.body.friends_count}
-            media={<UsersIcon className={classes.icon} />}
+            content={socialMediaNumberFormatter.format(usernameInfo!.data.body.friends_count)}
+            media={(
+              <>
+                <UsersIcon className={classnames(classes.icon, classes.following)} />
+                <Typography variant="body2" className={classes.text}>Following</Typography>
+              </>
+            )}
           />
-          <Card content="6" media={<ChatAlt2Icon className={classes.icon} />} />
-          <Card content="6" media={<SwitchVerticalIcon className={classes.icon} />} />
+          <Card
+            content={socialMediaNumberFormatter.format(usernameInfo!.data.body.statuses_count)}
+            media={(
+              <>
+                <ChatAlt2Icon className={classnames(classes.icon, classes.tweets)} />
+                <Typography variant="body2" className={classes.text}>Tweets</Typography>
+              </>
+          )}
+          />
         </Grid>
-        <Grid className={classes.resultCard}>
+        <Grid>
           {showResult()}
         </Grid>
       </>

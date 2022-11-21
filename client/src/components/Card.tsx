@@ -17,6 +17,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   media: {
     display: 'flex',
     justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
     margin: theme.spacing(3, 'auto'),
   },
@@ -24,6 +25,8 @@ const useStyles = makeStyles()((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    fontWeight: 600,
+    borderTop: '1px solid #eee',
   },
 }));
 
