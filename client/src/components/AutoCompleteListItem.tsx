@@ -38,7 +38,7 @@ const AutoCompleteListItem = ({
   const { classes } = useStyles();
   const parts = useMemo(() => {
     const matches = match(username, inputValue, { insideWords: true });
-    return parse(username, matches);
+    return parse(name, matches);
   }, [username, inputValue]);
 
   const highlightedText = useMemo(() => (

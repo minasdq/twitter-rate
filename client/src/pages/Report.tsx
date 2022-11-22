@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import classnames from 'classnames';
+import { AxiosResponse } from 'axios';
 
 import {
   Avatar, CircularProgress, Grid, Theme, Typography,
@@ -80,7 +81,7 @@ const Report = () => {
 
   const {
     data: usernameInfo, isLoading: isUsernameInfoLoading, isError: isUsernameInfoError,
-  } = useQuery<UserResponse>({
+  } = useQuery<AxiosResponse<UserResponse>>({
     queryKey: ['getUser', initialUsername],
     queryFn: () => axios.get(`get/user/${initialUsername}`),
   });
@@ -88,12 +89,13 @@ const Report = () => {
   const {
     data: mutualFollowers, isLoading: isMutualFollowersLoading,
     isError: isMutualFollowersError,
-  } = useQuery < UsersResponse>({
+  } = useQuery <UsersResponse>({
     queryKey: ['mutualFollowers', initialUsername],
     queryFn: () => axios.get(`get/mutual-followers/?username=${initialUsername}&id=${usernameInfo?.data?.body?.id_str}`),
     enabled: !!usernameInfo?.data?.body?.id_str,
   });
 
+  console.log(mutualFollowers);
   const showResult = () => {
     if (isMutualFollowersLoading) {
       return <CircularProgress />;

@@ -8,17 +8,16 @@ export interface User {
   description: string,
   verified: boolean,
   profile_image_url_https: string,
-  created_at: string
+  created_at: string,
+  screen_name: string,
+  profile_image_url: string,
+  name: string
 }
 
 export interface UserResponse {
-  data: {
-    body: User
-  }
+  body: User
 }
 
 export interface UsersResponse {
-  data: {
-    body: User[]
-  }
+  body: User[]
 }

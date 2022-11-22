@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -13,6 +13,8 @@ import { AtSymbolIcon, ExclamationCircleIcon } from '@heroicons/react/outline';
 import AutoCompleteListItem from './AutoCompleteListItem';
 
 import useAutoCompleteState from 'Hooks/useAutoCompleteState';
+
+import { User } from 'Types/api';
 
 const useStyles = makeStyles()((theme) => ({
   autocomplete: {
@@ -45,12 +47,12 @@ const Autocomplete = ({
   query, setQuery,
 }: AutoCompleteProps) => {
   const { classes } = useStyles();
+  const [usernameList, setUsernameList] = useState<User[]>([]);
 
   const {
-    usernameList,
     isLoading,
     isError,
-  } = useAutoCompleteState(query, setQuery);
+  } = useAutoCompleteState(query, setQuery, (options: User[]) => setUsernameList(options));
 
   const handleAutoCompleteChanges = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -60,10 +62,10 @@ const Autocomplete = ({
     <MuiAutocomplete
       fullWidth
       className={classes.autocomplete}
-      freeSolo
-      options={usernameList?.data?.body || []}
-      getOptionLabel={(option: any) => option.screen_name}
-      filterOptions={(x) => x}
+      options={usernameList || []}
+      getOptionLabel={(option) => option.screen_name}
+      filterOptions={(filterOptions) => filterOptions}
+      disableClearable
       renderOption={(props, option, { inputValue }) => (
         <AutoCompleteListItem
           {...props}
@@ -97,7 +99,7 @@ const Autocomplete = ({
               }),
               ...(isError && {
                 endAdornment: (
-                  <InputAdornment position="end" className={classes.icon}>
+                  <InputAdornment position="end">
                     <ExclamationCircleIcon
                       className={classnames(classes.icon, classes.errorIcon)}
                     />
