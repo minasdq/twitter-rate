@@ -21,7 +21,7 @@ import { socialMediaNumberFormatter } from 'Utils/numberUtils';
 
 import axios from 'Configs/axios';
 
-import { UserResponse, UsersResponse } from 'Types/user';
+import { UserResponse, UsersResponse } from 'Types/api';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
@@ -93,8 +93,6 @@ const Report = () => {
     queryFn: () => axios.get(`get/mutual-followers/?username=${initialUsername}&id=${usernameInfo?.data?.body?.id_str}`),
     enabled: !!usernameInfo?.data?.body?.id_str,
   });
-
-  console.log(mutualFollowers?.data);
 
   const showResult = () => {
     if (isMutualFollowersLoading) {

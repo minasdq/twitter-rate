@@ -8,7 +8,7 @@ import themeAtom from 'Atoms/theme';
 import darkTheme from './darkTheme';
 import lightTheme from './lightTheme';
 
-import { ThemeMode } from 'Types/theme';
+import { ThemeMode } from 'Types/common';
 
 interface ThemeProviderProps {
   children: JSX.Element

@@ -1,4 +1,4 @@
-import { User } from 'Types/user';
+import { User } from 'Types/api';
 
 // eslint-disable-next-line import/prefer-default-export
 export const mapUserTypeUtil = (user: User) => ({

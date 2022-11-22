@@ -23,7 +23,7 @@ const darkTheme = createTheme({
       light: '#9FE7F5',
     },
     background: {
-      default: '#212121',
+      default: '#272727',
     },
   },
 });

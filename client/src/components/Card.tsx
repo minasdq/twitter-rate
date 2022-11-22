@@ -28,7 +28,6 @@ const useStyles = makeStyles()((theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 600,
-    borderTop: '1px solid #eee',
   },
 }));
 
