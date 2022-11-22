@@ -45,14 +45,15 @@ const Header = () => {
           </Grid>
           <Grid className={classes.iconContainer}>
             <Tooltip title={(theme.mode as string).toLocaleLowerCase()}>
-              <IconButton onClick={() => setTheme({
-                mode: theme.mode === ThemeMode.LIGHT
-                  ? ThemeMode.DARK : ThemeMode.LIGHT,
-              })}
+              <IconButton
+                onClick={() => setTheme({
+                  mode: theme.mode === ThemeMode.LIGHT
+                    ? ThemeMode.DARK : ThemeMode.LIGHT,
+                })}
               >
                 {theme.mode === ThemeMode.LIGHT
-                  ? <SunIcon className={classes.icon} />
-                  : <MoonIcon className={classes.icon} />}
+                  ? <SunIcon className={classes.icon} data-testid="sun" />
+                  : <MoonIcon className={classes.icon} data-testid="moon" />}
               </IconButton>
             </Tooltip>
           </Grid>
