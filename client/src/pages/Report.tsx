@@ -148,7 +148,7 @@ const Report = () => {
     if (!usernameInfo?.data.body) {
       return (
         <Typography>
-          UserResponse with this profile was not found
+          user was not found
         </Typography>
       );
     }

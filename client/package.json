@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "test": "jest --watch"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "proxy": "http://localhost:5000",
   "dependencies": {
     "@emotion/react": "^11.10.5",

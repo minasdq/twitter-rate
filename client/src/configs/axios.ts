@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-  baseURL: 'http://localhost:5001/api/',
+  baseURL: import.meta.env.MODE !== 'development' ? 'https://twitter-rate.onrender.com/api/' : 'http://localhost:5001/api/',
 });

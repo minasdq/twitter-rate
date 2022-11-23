@@ -5,6 +5,7 @@
       "DOM.Iterable",
       "ESNext"
     ],
+    "outDir": "./dist/",
     "isolatedModules": true,
     "esModuleInterop": false,
     "jsx": "react-jsx",
