@@ -92,7 +92,7 @@ export const getInteractionScore = (users: TotalActionScoreParams[]) => {
     interactionScore += totalActionScore;
   });
 
-  return interactionScore;
+  return interactionScore / users.length;
 };
 
 export const getVerifiedUserCount = (users: TotalActionScoreParams[]) => {
@@ -119,7 +119,7 @@ export const getTotalInteractionScore = (users: TotalActionScoreParams[]) => {
     totalInteractionScore = 2;
   }
 
-  return totalInteractionScore / users.length;
+  return totalInteractionScore;
 };
 
 export const getRateTwitter = ({

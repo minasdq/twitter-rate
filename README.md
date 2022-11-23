@@ -10,7 +10,8 @@ Run these commands on your terminal to set the proxy:
 	
 	export https_proxy=http://ip:port/
 	```
-- you can go to the following link and register your request to receive the twitter token, .
+- I set my Twitter token in the code of project but I might revoke it for security reasons. To receive the token, you can go to the following link and register your request .
+- Twitter APIs have a rate limit and you can't make more than 15 requests in 15 minutes .
 https://developer.twitter.com/en/apply-for-access
 - Make sure you have proper access to the API as some APIs are premium.
 - The Twitter API does not support CORS so I implemented Express project to call APIs of twitter for getting data.
