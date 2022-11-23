@@ -5,6 +5,8 @@ import { makeStyles } from 'tss-react/mui';
 
 import SearchBar from 'Components/SearchBar';
 
+import { User } from 'Types/api';
+
 import Formaloo from 'Assets/images/Formaloo.jpg';
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -26,7 +28,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }));
 
 const Home = () => {
-  const [username, setUsername] = useState('');
+  const [query, setQuery] = useState<Partial<User>>({ screen_name: '' });
   const { classes } = useStyles();
 
   return (
@@ -45,7 +47,7 @@ const Home = () => {
       >
         A tool to detect who is fake on Twitter
       </Typography>
-      <SearchBar username={username} setUsername={setUsername} />
+      <SearchBar query={query} setQuery={setQuery} />
     </Grid>
   );
 };

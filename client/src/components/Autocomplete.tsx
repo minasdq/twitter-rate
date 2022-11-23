@@ -1,4 +1,3 @@
-import { ChangeEvent, useState } from 'react';
 import classnames from 'classnames';
 
 import {
@@ -39,39 +38,38 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 interface AutoCompleteProps {
-  query: string,
-  setQuery: (value: string) => void
+  query: Partial<User>,
+  setQuery: (value: Partial<User>) => void
 }
 
 const Autocomplete = ({
   query, setQuery,
 }: AutoCompleteProps) => {
   const { classes } = useStyles();
-  const [usernameList, setUsernameList] = useState<User[]>([]);
 
   const {
     isLoading,
+    usernameList,
     isError,
-  } = useAutoCompleteState(query, setQuery, (options: User[]) => setUsernameList(options));
-
-  const handleAutoCompleteChanges = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-  };
+  } = useAutoCompleteState(query, setQuery);
 
   return (
     <MuiAutocomplete
       fullWidth
       className={classes.autocomplete}
-      options={usernameList || []}
-      getOptionLabel={(option) => option.screen_name}
+      options={usernameList?.data?.body || []}
+      getOptionLabel={(option) => option.screen_name!}
+      onInputChange={(_, value) => setQuery({ screen_name: value })}
+      onChange={(_, value) => setQuery(value)}
+      value={query}
       filterOptions={(filterOptions) => filterOptions}
       disableClearable
       renderOption={(props, option, { inputValue }) => (
         <AutoCompleteListItem
           {...props}
-          name={option.name}
-          username={option.screen_name}
-          avatarSrc={option.profile_image_url}
+          name={option.name!}
+          username={option.screen_name!}
+          avatarSrc={option.profile_image_url!}
           inputValue={inputValue}
         />
       )}
@@ -80,8 +78,8 @@ const Autocomplete = ({
           <TextField
             {...params}
             autoFocus
-            onChange={handleAutoCompleteChanges}
-            value={query}
+            // onChange={handleAutoCompleteChanges}
+            // // value={query}
             placeholder="Search username ..."
             InputProps={{
               ...params.InputProps,

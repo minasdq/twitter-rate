@@ -21,7 +21,7 @@ interface AutoCompleteListItemProps extends HTMLAttributes<HTMLElement> {
 
 const useStyles = makeStyles()((theme: Theme) => ({
   highlightedText: {
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: 700,
   },
   gray: {
     color: theme.palette.grey[700],
@@ -37,9 +37,9 @@ const AutoCompleteListItem = ({
 }: AutoCompleteListItemProps) => {
   const { classes } = useStyles();
   const parts = useMemo(() => {
-    const matches = match(username, inputValue, { insideWords: true });
+    const matches = match(name, inputValue, { insideWords: true });
     return parse(name, matches);
-  }, [username, inputValue]);
+  }, [name, inputValue]);
 
   const highlightedText = useMemo(() => (
     parts.map((part) => (

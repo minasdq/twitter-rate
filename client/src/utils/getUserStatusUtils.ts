@@ -61,22 +61,27 @@ export const getTotalActionScore = ({
   const differenceYear = year - creationYear;
   const followerToFollowerRatio = followerCount / followingCount;
 
+  if (!tweetCount) {
+    return 0;
+  }
+
   let totalActionScore = actionScore;
   if (isVerified) {
     totalActionScore += 3;
   }
-  if (likeCount / tweetCount > 100) {
+  if ((likeCount / tweetCount) > 100) {
     totalActionScore -= 2;
   }
-  if (retweetCount / tweetCount > 20) {
+  if ((retweetCount / tweetCount) > 20) {
     totalActionScore -= 2;
-  } if (followerToFollowerRatio > 0.5 && followerToFollowerRatio < 1.5 && followingCount > 1000) {
+  } if ((followerToFollowerRatio > 0.5)
+   && (followerToFollowerRatio < 1.5) && (followingCount > 1000)) {
     totalActionScore -= 2;
-  } if ((tweetCount + retweetCount) / differenceYear > 5000) {
+  } if (differenceYear && ((tweetCount + retweetCount) / differenceYear) > 5000) {
     totalActionScore -= 2;
   }
 
-  return totalActionScore;
+  return totalActionScore > 5 ? 5 : totalActionScore;
 };
 
 export const getInteractionScore = (users: TotalActionScoreParams[]) => {

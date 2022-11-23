@@ -5,30 +5,28 @@ import useDebounce from 'Hooks/useDebounce';
 
 import axios from 'Configs/axios';
 
-import { UsersResponse, User } from 'Types/api';
+import { User, UsersResponse } from 'Types/api';
 
 const useAutoCompleteState = (
-  query: string,
-  setQuery: (value: string) => void,
-  setState: (options: User[]) => void,
+  query: Partial<User>,
+  setQuery: (value: User) => void,
 ) => {
   const debouncedQuery = useDebounce(query, 300);
 
   const {
-    isLoading,
+    fetchStatus,
+    status,
     isError,
     data: usernameList,
   } = useQuery<AxiosResponse<UsersResponse>>({
-    queryKey: ['getUsers', debouncedQuery],
-    queryFn: () => axios.get(`get/users/${debouncedQuery}`),
-    enabled: !!debouncedQuery,
-    onSuccess: (response) => {
-      setState(response.data?.body || []);
-    },
+    queryKey: ['getUsers', debouncedQuery.screen_name],
+    queryFn: () => axios.get(`get/users/${debouncedQuery.screen_name}`),
+    enabled: !!debouncedQuery.screen_name,
+    keepPreviousData: true,
   });
 
   return ({
-    isLoading,
+    isLoading: fetchStatus === 'fetching' && status === 'loading',
     isError,
     usernameList,
     query,

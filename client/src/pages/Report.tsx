@@ -22,7 +22,7 @@ import { socialMediaNumberFormatter } from 'Utils/numberUtils';
 
 import axios from 'Configs/axios';
 
-import { UserResponse, UsersResponse } from 'Types/api';
+import { User, UserResponse, UsersResponse } from 'Types/api';
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
@@ -76,7 +76,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 const Report = () => {
   const { username: initialUsername } = useParams();
-  const [username, setUsername] = useState(initialUsername || '');
+  const [query, setQuery] = useState<Partial<User>>({ screen_name: initialUsername || '' });
   const { classes } = useStyles();
 
   const {
@@ -89,13 +89,12 @@ const Report = () => {
   const {
     data: mutualFollowers, isLoading: isMutualFollowersLoading,
     isError: isMutualFollowersError,
-  } = useQuery <UsersResponse>({
+  } = useQuery<AxiosResponse<UsersResponse>>({
     queryKey: ['mutualFollowers', initialUsername],
     queryFn: () => axios.get(`get/mutual-followers/?username=${initialUsername}&id=${usernameInfo?.data?.body?.id_str}`),
     enabled: !!usernameInfo?.data?.body?.id_str,
   });
 
-  console.log(mutualFollowers);
   const showResult = () => {
     if (isMutualFollowersLoading) {
       return <CircularProgress />;
@@ -114,7 +113,9 @@ const Report = () => {
             &nbsp;
             {getRateTwitter({
               ...mapUserTypeUtil(usernameInfo!.data.body),
-              mutualFollowers: [],
+              mutualFollowers: mutualFollowers.data.body.map(
+                (mutualFollower) => mapUserTypeUtil(mutualFollower),
+              ),
             })}
             /10
           </Typography>
@@ -201,7 +202,7 @@ const Report = () => {
   return (
     <Grid className={classes.container}>
       <Grid className={classes.searchContainer}>
-        <SearchBar username={username} setUsername={setUsername} />
+        <SearchBar query={query} setQuery={setQuery} />
       </Grid>
       <Grid className={classes.cardsContainer}>
         {showUserInfo()}

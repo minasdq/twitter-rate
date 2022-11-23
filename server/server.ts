@@ -24,7 +24,7 @@ export interface User {
 }
 
 const app = express()
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5001
 const get = util.promisify(request.get)
 const { parsed: enviromentVariable } = dotenv.config()
 
@@ -133,16 +133,15 @@ app.get('/api/get/mutual-followers', async (req: express.Request, res: express.R
   if (!BEARER_TOKEN) {
     res.status(400).send(authMessage)
   }
-
   const followersRequestConfig = {
-    url: `${getFollowersUrl as unknown as string}?cursor=-1&screen_name=${req.query.username as string}&skip_status=true&include_user_entities=false`,
+    url: `${getFollowersUrl as unknown as string}?cursor=-1&screen_name=${req.query.username as string}&skip_status=true&include_user_entities=false&count=100`,
     auth: {
       bearer: BEARER_TOKEN
     },
     json: true
   }
   const followingRequestConfig = {
-    url: `${getFollowingUrl as unknown as string}/${req.query.id as string}/following`,
+    url: `${getFollowingUrl as unknown as string}/${req.query.id as string}/following?max_results=100`,
     auth: {
       bearer: BEARER_TOKEN
     },
@@ -152,15 +151,13 @@ app.get('/api/get/mutual-followers', async (req: express.Request, res: express.R
     const followersResponse = await get(followersRequestConfig)
     const followingResponse = await get(followingRequestConfig)
 
-    if (followersResponse.statusCode !== 200 || followingResponse.statusCode !== 200) {
-      if (followersResponse.statusCode === 403 || followingResponse.statusCode === 400) {
-        res.status(403).send(followersResponse.body)
-      } else {
-        throw new Error(followersResponse.body.error.message)
-      }
+    if (followingResponse.statusCode !== 200) {
+      return res.status(followingResponse.statusCode).send(followersResponse.body)
+    } else if (followersResponse.statusCode !== 200) {
+      return res.status(followersResponse.statusCode).send(followersResponse.body)
     }
     const mutualFollowers = followersResponse.body.users.filter((user: User) => {
-      return lodash.find(followersResponse.body.data || [], { id: user.id_str })
+      return lodash.find(followingResponse.body.data || [], { id: user.id_str })
     })
 
     res.send({ body: mutualFollowers })

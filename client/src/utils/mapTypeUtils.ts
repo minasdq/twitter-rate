@@ -1,5 +1,8 @@
 import { User } from 'Types/api';
 
+// TODO: get the number of retweets from the server
+// get all tweets and if someone has retweeted them, add them to the total amount of retweet
+
 // eslint-disable-next-line import/prefer-default-export
 export const mapUserTypeUtil = (user: User) => ({
   retweetCount: Math.ceil(user.statuses_count / 10),

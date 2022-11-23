@@ -6,6 +6,8 @@ import { SearchIcon } from '@heroicons/react/outline';
 
 import Autocomplete from './Autocomplete';
 
+import { User } from 'Types/api';
+
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
     width: '100%',
@@ -24,18 +26,18 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }));
 
 interface SearchBarProps {
-  username: string,
-  setUsername: (value: string) => void
+  query: Partial<User>,
+  setQuery: (value: Partial<User>) => void
 }
 
-const SearchBar = ({ username, setUsername }: SearchBarProps) => {
+const SearchBar = ({ query, setQuery }: SearchBarProps) => {
   const navigate = useNavigate();
   const { classes } = useStyles();
 
   return (
     <Grid className={classes.container}>
-      <Autocomplete query={username} setQuery={setUsername} />
-      <Button variant="contained" className={classes.button} onClick={() => navigate(`report/${username}`)}>
+      <Autocomplete query={query} setQuery={setQuery} />
+      <Button variant="contained" className={classes.button} onClick={() => navigate(`/report/${query.screen_name}`)}>
         <SearchIcon className={classes.icon} />
       </Button>
     </Grid>
